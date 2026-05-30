@@ -17,7 +17,40 @@ function buscarPorId(req, res) {
 }
 
 function criar(req, res) {
-  // TODO
+  const { nome, descricao, preco, categoria, estoque } = req.body;
+
+  if (!nome || typeof nome !== 'string' || nome.trim().length < 3) {
+    return res.status(400).json({ erro: "O campo 'nome' é obrigatório e deve ter no mínimo 3 caracteres", campo: 'nome' });
+  }
+  if (!descricao || typeof descricao !== 'string' || descricao.trim().length < 10) {
+    return res.status(400).json({ erro: "O campo 'descricao' é obrigatório e deve ter no mínimo 10 caracteres", campo: 'descricao' });
+  }
+  if (preco === undefined || typeof preco !== 'number' || preco <= 0) {
+    return res.status(400).json({ erro: "O campo 'preco' é obrigatório e deve ser maior que zero", campo: 'preco' });
+  }
+  const categoriasValidas = ['equipamento', 'servico', 'acessorio'];
+  if (!categoria || !categoriasValidas.includes(categoria)) {
+    return res.status(400).json({ erro: "O campo 'categoria' deve ser equipamento, servico ou acessorio", campo: 'categoria' });
+  }
+  if (estoque === undefined || !Number.isInteger(estoque) || estoque < 0) {
+    return res.status(400).json({ erro: "O campo 'estoque' é obrigatório e deve ser inteiro maior ou igual a zero", campo: 'estoque' });
+  }
+
+  const agora = new Date().toISOString();
+  const novoProduto = {
+    id: nextId++,
+    nome: nome.trim(),
+    descricao: descricao.trim(),
+    preco,
+    categoria,
+    estoque,
+    ativo: true,
+    criado_em: agora,
+    atualizado_em: agora,
+  };
+
+  produtos.push(novoProduto);
+  res.status(201).json(novoProduto);
 }
 
 function atualizar(req, res) {
