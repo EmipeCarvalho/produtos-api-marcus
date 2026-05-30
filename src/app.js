@@ -1,4 +1,5 @@
 const express = require('express');
+const produtosRouter = require('./routes/produtos');
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +11,8 @@ app.use((req, res, next) => {
   console.log(`[${timestamp}] ${req.method} ${req.originalUrl}`);
   next();
 });
+
+app.use('/api/v1/produtos', produtosRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
